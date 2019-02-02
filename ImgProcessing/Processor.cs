@@ -27,7 +27,7 @@ namespace photoEditor.ImgProcessing
 				}
 				else
 				{
-					return tmpFile.LastWriteTime.ToString("yyyy_MM_dd HH_mm_ss no_prop");
+					return tmpFile.LastWriteTime.ToString("yyyy_MM_dd HH_mm_ss");
 				}
 			}
 		}
@@ -121,6 +121,47 @@ namespace photoEditor.ImgProcessing
 				cntr++;
 			}
 			Console.WriteLine($"Отсортировано файлов: {cntr}");
+			return;
+		}
+
+		public static void AddTimeMark(string dirPath)
+		{
+			if (!IsDirExists(dirPath))
+			{
+				return;
+			}
+
+			if (!IsFilesExists(dirPath, out FileInfo[] fileList))
+			{
+				return;
+			}
+
+			string newDir = $@"{dirPath}_MarkedImg";
+			CreateEmptyDir(newDir);
+
+			Console.WriteLine("Изменение...");
+			int cntr = 0;
+			foreach (var file in fileList)
+			{
+				string strDateTaken = GetStrDateTaken(file);
+
+				int _fontSize = 100;
+				Brush fontColor = Brushes.Crimson;
+				Font font = new Font("Calibri", _fontSize);
+
+				using (Image tmpImg = Image.FromFile(file.FullName))
+				{
+					int x = 100;
+					int y = 100;
+
+					Graphics tmpG = Graphics.FromImage(tmpImg);
+
+					tmpG.DrawString(strDateTaken, font, fontColor, x, y);
+					tmpImg.Save($@"{newDir}\{file.Name}.jpg");
+				}
+				cntr++;
+			}
+			Console.WriteLine($"Изменено файлов: {cntr}");
 			return;
 		}
 	}

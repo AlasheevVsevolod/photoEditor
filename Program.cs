@@ -29,6 +29,12 @@ namespace photoEditor
 					case "a":
 					case "addtimemark":
 						//addtimemark
+						if (!isCmdParameterExists)
+						{
+							Console.WriteLine("Addtimemark [path]");
+						}
+
+						Processor.AddTimeMark(parameter);
 						break;
 
 					case "h":
