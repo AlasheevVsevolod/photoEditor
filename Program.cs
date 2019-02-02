@@ -56,6 +56,12 @@ namespace photoEditor
 					case "sy":
 					case "sortbyyear":
 						//sortbyyear
+						if (!isCmdParameterExists)
+						{
+							Console.WriteLine("SortbyYear [path]");
+						}
+
+						Processor.ImgSortByYear(parameter);
 						break;
 
 					case "sp":
