@@ -73,6 +73,12 @@ namespace photoEditor
 					case "sp":
 					case "sortbyplace":
 						//sortbyplace
+						if (!isCmdParameterExists)
+						{
+							Console.WriteLine("SortbyPlace [path]");
+						}
+
+						Processor.ImgSortByPlace(parameter);
 						break;
 
 					default:
