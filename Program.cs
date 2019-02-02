@@ -28,7 +28,7 @@ namespace photoEditor
 				{
 					case "a":
 					case "addtimemark":
-						//addtimemark
+
 						if (!isCmdParameterExists)
 						{
 							Console.WriteLine("Addtimemark [path]");
@@ -50,7 +50,6 @@ namespace photoEditor
 
 					case "r":
 					case "rename":
-						//rename
 						if (!isCmdParameterExists)
 						{
 							Console.WriteLine("Rename [path]");
@@ -61,7 +60,6 @@ namespace photoEditor
 
 					case "sy":
 					case "sortbyyear":
-						//sortbyyear
 						if (!isCmdParameterExists)
 						{
 							Console.WriteLine("SortbyYear [path]");
@@ -72,7 +70,6 @@ namespace photoEditor
 
 					case "sp":
 					case "sortbyplace":
-						//sortbyplace
 						if (!isCmdParameterExists)
 						{
 							Console.WriteLine("SortbyPlace [path]");
