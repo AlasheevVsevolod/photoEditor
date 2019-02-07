@@ -42,15 +42,5 @@ namespace photoEditor.Extensions
 			//System.IO.DirectoryNotFoundException
 			Directory.CreateDirectory(newDir);
 		}
-
-		public static string GetTagValue(this string srcString, string tagName)
-		{
-			int startIndex;
-			int stopIndex;
-
-			startIndex = srcString.IndexOf($"<{tagName}>");
-			stopIndex = srcString.IndexOf($"</{tagName}>");
-			return $@"{srcString.Substring(startIndex + tagName.Length + 2, stopIndex - 2 - startIndex - tagName.Length)}";
-		}
 	}
 }

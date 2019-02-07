@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using photoEditor.Extensions;
-using static photoEditor.GPSProcessing;
 
 namespace photoEditor.ImgProcessing
 {
@@ -31,10 +30,13 @@ namespace photoEditor.ImgProcessing
 			int cntr = 0;
 			foreach (var file in fileList)
 			{
-				string strDateTaken = file.GetStrDateTaken();
+				using (Image tmpImg = Image.FromFile(file.FullName))
+				{
+					string strDateTaken = tmpImg.GetDateTaken(file.LastWriteTime);
 
-				file.CopyTo($@"{newDir}\{strDateTaken}.jpg");
-				cntr++;
+					file.CopyTo($@"{newDir}\{strDateTaken}.jpg");
+					cntr++;
+				}
 			}
 			Console.WriteLine($"Скопировано файлов: {cntr}");
 			return;
@@ -59,12 +61,15 @@ namespace photoEditor.ImgProcessing
 			int cntr = 0;
 			foreach (var file in fileList)
 			{
-				string strYearDateTaken = file.GetStrDateTaken().Substring(0, 4);
-				string newDirWithYear = $@"{newDir}\{strYearDateTaken}";
+				using (Image tmpImg = Image.FromFile(file.FullName))
+				{
+					string strYearDateTaken = tmpImg.GetDateTaken(file.LastWriteTime).Substring(0, 4);
+					string newDirWithYear = $@"{newDir}\{strYearDateTaken}";
 
-				Directory.CreateDirectory(newDirWithYear);
-				file.CopyTo($@"{newDirWithYear}\{file.Name}.jpg");
-				cntr++;
+					Directory.CreateDirectory(newDirWithYear);
+					file.CopyTo($@"{newDirWithYear}\{file.Name}.jpg");
+					cntr++;
+				}
 			}
 			Console.WriteLine($"Отсортировано файлов: {cntr}");
 			return;
@@ -89,12 +94,13 @@ namespace photoEditor.ImgProcessing
 			int cntr = 0;
 			foreach (var file in fileList)
 			{
-				string strDateTaken = file.GetStrDateTaken();
 
 				using (Image tmpImg = Image.FromFile(file.FullName))
 				{
 					int _fontSize;
-					
+
+					string strDateTaken = tmpImg.GetDateTaken(file.LastWriteTime);
+
 					//на разных фотках шрифт выглядит по разному, отсюда разделение на то
 					//что "меньше" экрана и остальное
 					if (tmpImg.Height < 1000)
@@ -142,25 +148,11 @@ namespace photoEditor.ImgProcessing
 			{
 				using (Image tmpImg = Image.FromFile(file.FullName)) 
 				{
-					const int idLatSign = 1, idLat = 2, idLongitSing = 3, idLongit = 4;
+					const int idLat = 2, idLongit = 4;
 
 					if (tmpImg.PropertyIdList.Contains(idLat) && tmpImg.PropertyIdList.Contains(idLongit))
 					{
-						byte[] latArray = tmpImg.GetPropertyItem(idLat).Value;
-						double latitude = Math.Round(latArray.ConvertCoorditate(),6);
-						if (BitConverter.ToChar(tmpImg.GetPropertyItem(idLatSign).Value, 0) == 'S')
-						{
-							latitude = 0 - latitude;
-						}
-
-						byte[] longitArray = tmpImg.GetPropertyItem(idLongit).Value;
-						double longitude = Math.Round(longitArray.ConvertCoorditate(),6);
-						if (BitConverter.ToChar(tmpImg.GetPropertyItem(idLongitSing).Value, 0) == 'W')
-						{
-							longitude = 0 - longitude;
-						}
-
-						string imgLocation = GetLocation(latitude, longitude);
+						string imgLocation = tmpImg.GetGPSPlaceName();
 
 						string newDirWithLocation = $@"{newDir}\{imgLocation}";
 						Directory.CreateDirectory(newDirWithLocation);
@@ -169,7 +161,6 @@ namespace photoEditor.ImgProcessing
 						cntr++;
 					}
 				}
-
 			}
 			Console.WriteLine($"Отсортировано файлов: {cntr}");
 			return;
